@@ -1,0 +1,47 @@
+<div class="trending-books-container" *ngIf="!isLoading">
+  <h2 class="section-title">Sản phẩm trong danh mục: {{ categoryName }}</h2>
+
+  <div class="books-list-track">
+    <div *ngIf="products.length === 0">Không có sản phẩm nào</div>
+
+    <div *ngFor="let book of products" class="book-card slide-fade" (click)="goToDetail(book.hashId)">
+      <div class="book-cover-container">
+        <img [src]="'http://localhost:8177' + book.image"
+             [alt]="book.productName"
+             class="book-cover-image">
+      </div>
+
+      <div class="action-button-area">
+        <button class="action-button borrow-btn"
+                (click)="borrowBook(book.hashId, $event)">
+          Mượn
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <nav *ngIf="totalPages > 1" class="mt-3">
+    <ul class="pagination justify-content-center">
+
+      <li class="page-item" [class.disabled]="page === 0">
+        <button class="page-link" (click)="changePage(page - 1)">«</button>
+      </li>
+
+      <li class="page-item"
+          *ngFor="let p of [].constructor(totalPages); let i = index"
+          [class.active]="i === page">
+        <button class="page-link" (click)="changePage(i)">
+          {{ i + 1 }}
+        </button>
+      </li>
+
+      <li class="page-item" [class.disabled]="page === totalPages - 1">
+        <button class="page-link" (click)="changePage(page + 1)">»</button>
+      </li>
+
+    </ul>
+  </nav>
+
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+</div>

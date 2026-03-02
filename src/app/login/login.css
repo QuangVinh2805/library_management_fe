@@ -1,0 +1,40 @@
+.logo{
+  font-family: cursive;
+  font-size: 35px;
+  text-align: center;
+  color: #dcc466;
+  margin-bottom: 10px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.btn-login{
+  background-color: #e6d9a2;
+  color:#fff;
+
+}
+
+.btn-login:hover{
+  background-color: #dfc85e;
+}
+
+.links-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 95px;
+  margin-bottom: 10px;
+}
+
+.register-link,
+.reset-password-link {
+  color: #dcc466;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.register-link:hover,
+.reset-password-link:hover {
+  text-decoration: underline;
+}
+

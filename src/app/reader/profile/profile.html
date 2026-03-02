@@ -1,0 +1,142 @@
+<div class="profile-wrapper">
+  <h2 class="profile-title">Thông tin cá nhân</h2>
+
+  <div class="profile-card">
+    <div class="profile-row">
+      <label class="profile-label">Họ và tên:</label>
+      <span>{{ user.name }}</span>
+    </div>
+
+    <div class="profile-row">
+      <label class="profile-label">Email:</label>
+      <span>{{ user.email }}</span>
+    </div>
+
+    <div class="profile-row">
+      <label class="profile-label">Số điện thoại:</label>
+      <span>{{ user.phone }}</span>
+    </div>
+
+    <div class="profile-row">
+      <label class="profile-label">Địa chỉ:</label>
+      <span>{{ user.address }}</span>
+    </div>
+
+    <div class="profile-row">
+      <label class="profile-label">Ngày sinh:</label>
+      <span>{{ user.birthday }}</span>
+    </div>
+
+    <div class="profile-row">
+      <label class="profile-label">CCCD:</label>
+      <span>{{ user.userCode }}</span>
+    </div>
+
+    <div class="profile-actions">
+      <button class="save-btn" (click)="openModal()">Cập nhật</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form (ngSubmit)="updateProfile()" #profileForm="ngForm" novalidate>
+
+        <div class="modal-body">
+
+          <div class="profile-row">
+            <label class="profile-label">
+              Họ và tên <span class="text-danger">*</span>
+            </label>
+            <input type="text"
+                   class="profile-input"
+                   [(ngModel)]="user.name"
+                   name="name"
+                   required
+                   #name="ngModel"/>
+            <small class="text-danger" *ngIf="name.invalid && name.touched">
+              Họ tên không được để trống
+            </small>
+          </div>
+
+          <div class="profile-row">
+            <label class="profile-label">
+              CCCD <span class="text-danger">*</span>
+            </label>
+            <input type="text"
+                   class="profile-input"
+                   [(ngModel)]="user.userCode"
+                   name="userCode"
+                   required
+                   #userCode="ngModel"/>
+            <small class="text-danger" *ngIf="userCode.invalid && userCode.touched">
+              CCCD không được để trống
+            </small>
+          </div>
+
+          <div class="profile-row">
+            <label class="profile-label">
+              Email <span class="text-danger">*</span>
+            </label>
+            <input type="email"
+                   class="profile-input"
+                   [(ngModel)]="user.email"
+                   name="email"
+                   required
+                   #email="ngModel"/>
+            <small class="text-danger" *ngIf="email.invalid && email.touched">
+              Email không hợp lệ
+            </small>
+          </div>
+
+          <div class="profile-row">
+            <label class="profile-label">
+              Số điện thoại
+            </label>
+            <input type="text"
+                   class="profile-input"
+                   [(ngModel)]="user.phone"
+                   name="phone"/>
+          </div>
+
+          <div class="profile-row">
+            <label class="profile-label">
+              Địa chỉ
+            </label>
+            <input type="text"
+                   class="profile-input"
+                   [(ngModel)]="user.address"
+                   name="address"/>
+          </div>
+
+          <div class="profile-row">
+            <label class="profile-label">
+              Ngày sinh <span class="text-danger">*</span>
+            </label>
+            <input type="date"
+                   class="profile-input"
+                   [(ngModel)]="user.birthday"
+                   name="birthday"
+                   required
+                   #birthday="ngModel"/>
+            <small class="text-danger" *ngIf="birthday.invalid && birthday.touched">
+              Ngày sinh không được để trống
+            </small>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Đóng
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Lưu
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

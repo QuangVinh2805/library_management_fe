@@ -1,0 +1,88 @@
+<div class="product-pre-reservation">
+  <h2>Danh sách các đơn đăng ký mượn sách</h2>
+
+  <p *ngIf="loading">Đang tải dữ liệu...</p>
+  <p *ngIf="error" class="text-danger">{{ error }}</p>
+
+  <table *ngIf="!loading && reservations.length > 0" class="table">
+    <thead>
+    <tr>
+      <th>Ảnh sản phẩm</th>
+      <th>Tên sản phẩm</th>
+      <th>Số lượng</th>
+      <th>Ngày mượn</th>
+      <th>Ngày đến hạn trả sách</th>
+      <th>Hạn trả sách</th>
+      <th>Trạng thái</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let res of reservations">
+      <td>
+        <img [src]="'http://localhost:8177' + res.image"
+             alt="{{ res.productName }}"
+             class="product-img">
+      </td>
+      <td>{{ res.productName }}</td>
+      <td>{{ res.quantity }}</td>
+      <td>{{ res.borrowDay | date:'dd/MM/yyyy' }}</td>
+      <td>{{ res.dueDay | date: 'dd/MM/yyyy' }}</td>
+      <td>
+        <span
+          [ngClass]="{
+      'status-confirmed': res.overdue === false,
+      'status-cancelled': res.overdue === true,
+          }">
+    {{
+            res.overdue === false ? 'Chưa đến hạn' :
+              'Đã quá hạn'
+          }}
+  </span>
+      </td>
+      <td>
+  <span
+    [ngClass]="{
+      'status-cancelled': res.status === 0,
+      'status-requested': res.status === 1,
+      'status-confirmed': res.status === 2,
+      'status-borrowing': res.status === 3,
+      'status-returned': res.status === 4
+    }">
+    {{
+      res.status === 0 ? 'Đã huỷ' :
+        res.status === 1 ? 'Đã gửi yêu cầu' :
+          res.status === 2 ? 'Đã xác nhận' :
+            res.status === 3 ? 'Đã mượn' :
+              'Đã trả'
+    }}
+  </span>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+
+  <nav *ngIf="totalPages > 1" class="mt-3">
+    <ul class="pagination justify-content-center">
+
+      <li class="page-item" [class.disabled]="page === 0">
+        <button class="page-link" (click)="changePage(page - 1)">«</button>
+      </li>
+
+      <li class="page-item"
+          *ngFor="let p of [].constructor(totalPages); let i = index"
+          [class.active]="i === page">
+        <button class="page-link" (click)="changePage(i)">
+          {{ i + 1 }}
+        </button>
+      </li>
+
+       <li class="page-item" [class.disabled]="page === totalPages - 1">
+        <button class="page-link" (click)="changePage(page + 1)">»</button>
+      </li>
+
+    </ul>
+  </nav>
+
+  <p *ngIf="!loading && reservations.length === 0">Chưa có sản phẩm nào được đặt trước.</p>
+</div>

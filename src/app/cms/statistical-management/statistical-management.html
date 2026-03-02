@@ -1,0 +1,32 @@
+<div class="container mt-4">
+
+  <h2 class="mb-4 text-center">Thống kê lượt mượn sách theo tháng ({{ currentYear }})</h2>
+
+  <div class="row mb-3 justify-content-center">
+    <div class="col-md-3">
+      <label class="form-label fw-bold">Chọn năm</label>
+      <input class="form-control"
+             type="number"
+             [(ngModel)]="currentYear"
+             (change)="loadStatistics(); loadProductStatistics()">
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="alert alert-info text-center">
+    Đang tải dữ liệu...
+  </div>
+
+  <canvas id="borrowChart" height="130" class="mb-5"></canvas>
+
+  <div *ngIf="!loading && statistics.length === 0" class="alert alert-warning text-center mt-3">
+    Không có dữ liệu lượt mượn cho năm {{ currentYear }}.
+  </div>
+
+  <h2 class="mb-4 text-center mt-5">Thống kê số lượng sách theo tháng ({{ currentYear }})</h2>
+  <canvas id="productChart" height="130"></canvas>
+
+  <div *ngIf="!loading && productStatistics.length === 0" class="alert alert-warning text-center mt-3">
+    Không có dữ liệu số sách cho năm {{ currentYear }}.
+  </div>
+
+</div>

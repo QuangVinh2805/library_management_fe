@@ -1,0 +1,89 @@
+<header class="ol-header">
+  <div class="ol-container">
+
+    <div class="ol-logo" routerLink="/reader" >Thư viện Sao Việt</div>
+
+    <div class="ol-search">
+
+      <div class="ol-search-category" routerLink="/reader/product-all">
+        Tất cả sách
+      </div>
+
+      <input
+        type="text"
+        placeholder="Tìm kiếm sách..."
+        (input)="onSearchChange($event)"
+      />
+
+      <button class="search-btn" (click)="submitSearch()">
+        <i class="bi bi-search"></i>
+      </button>
+
+      <div
+        *ngIf="showSearchDropdown"
+        class="search-dropdown"
+      >
+        <div
+          class="search-item"
+          *ngFor="let item of searchResults"
+          (click)="selectProduct(item)"
+        >
+          <span>{{ item.productName }}</span>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="ol-icons" style="position: relative;">
+
+      <button class="icon-btn" (click)="onUserClick()">
+        <ng-container *ngIf="userName; else showIcon">
+          <i class="bi bi-person-check"></i>
+        </ng-container>
+        <ng-template #showIcon>
+          <i class="bi bi-person"></i>
+        </ng-template>
+      </button>
+
+      <div
+        *ngIf="showDropdown"
+        class="user-dropdown"
+        style="position: absolute; top: 50px; right: 0; background: white; border: 1px solid #ccc; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); min-width: 160px; z-index: 100;"
+      >
+        <div style="padding: 10px 16px; font-weight: bold;">Xin chào {{ userName }}</div>
+        <hr style="margin: 0;">
+        <button class="dropdown-item" (click)="goToProfile()">Thông tin cá nhân</button>
+        <button class="dropdown-item" (click)="changePassword()">Đổi mật khẩu</button>
+        <button class="dropdown-item" (click)="logout()">Đăng xuất</button>
+      </div>
+
+      <button class="icon-btn" (click)="onMenuClick()">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <div
+        *ngIf="showMenuDropdown"
+        class="menu-dropdown"
+        style="position: absolute; top: 50px; right: 0; background: white; border: 1px solid #ccc; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); min-width: 200px; z-index: 100;"
+      >
+        <button class="dropdown-item" (click)="goToCategory()">Thể loại</button>
+        <button class="dropdown-item" (click)="goToAuthors()">Tác giả</button>
+        <button class="dropdown-item" (click)="goToPublishers()">Nhà xuất bản</button>
+        <button class="dropdown-item"
+                *ngIf="isLoggedIn"
+                (click)="goToFavourites()">
+          Sách yêu thích của bạn
+        </button>
+
+        <button class="dropdown-item"
+                *ngIf="isLoggedIn"
+                (click)="goToProductPreReservation()">
+          Sách đã đăng ký mượn của bạn
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</header>

@@ -1,0 +1,815 @@
+<div class="card shadow">
+
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span class="fw-bold">Tất cả Sách</span>
+    <button *ngIf="canCreate" class="btn btn-light btn-sm border" (click)="openCreateModal()">
+      <i class="bi bi-plus-circle"></i> Thêm mới
+    </button>
+  </div>
+
+  <div class="card-body">
+
+    <div class="mb-3">
+      <input type="text"
+             class="form-control"
+             placeholder="Tìm kiếm theo tên sách..."
+             [(ngModel)]="searchKeyword"
+             (ngModelChange)="onSearchInputChange(searchKeyword)">
+    </div>
+
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-dark"></div>
+    </div>
+
+    <div *ngIf="!loading" class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+        <tr>
+          <th>Ảnh</th>
+          <th>Tên sách</th>
+          <th>Tác giả</th>
+          <th>Danh mục</th>
+          <th>Nhà xuất bản</th>
+          <th>Năm xuất bản</th>
+          <th>Giá</th>
+          <th>Số lượng</th>
+          <th>Vị trí</th>
+          <th>Trạng thái</th>
+          <th class="text-center" style="width: 160px;">Chức năng</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let p of products">
+
+          <td>
+            <img [src]="'http://localhost:8177' + p.image"
+                 alt="" width="90" height="120" class="rounded border">
+          </td>
+
+          <td>{{ p.productName }}</td>
+          <td>{{ p.authorName }}</td>
+          <td>{{ p.categoryName }}</td>
+          <td>{{ p.publisherName}}</td>
+          <td>{{ p.publicationDate}}</td>
+          <td>{{ p.price | number }} đ</td>
+          <td>{{ p.quantity }}</td>
+          <td>{{ p.location }}</td>
+          <td>
+            <span [ngClass]="p.status === 1 ? 'badge bg-success' : 'badge bg-secondary'">
+              {{ p.status === 1 ? 'Còn sách' : 'Hết sách' }}
+            </span>
+          </td>
+
+          <td class="text-center">
+
+            <button class="btn btn-sm btn-outline-dark me-1"
+                    (click)="viewDetail(p.hashId)">
+              <i class="bi bi-eye"></i>
+            </button>
+
+            <button *ngIf="canUpdate" class="btn btn-sm btn-outline-primary me-1"
+                    (click)="openEditModal(p)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+
+            <button  *ngIf="canChangeStatus" class="btn btn-sm btn-outline-warning me-1"
+                    (click)="toggleStatus(p.hashId)">
+              <i class="bi" [ngClass]="p.status === 1 ? 'bi-slash-circle' : 'bi-check-circle'"></i>
+            </button>
+
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <nav *ngIf="totalPages > 1" class="mt-3">
+        <ul class="pagination justify-content-center">
+
+          <li class="page-item" [class.disabled]="page === 0">
+            <button class="page-link" (click)="changePage(page - 1)">«</button>
+          </li>
+
+          <li class="page-item"
+              *ngFor="let p of [].constructor(totalPages); let i = index"
+              [class.active]="i === page">
+            <button class="page-link" (click)="changePage(i)">
+              {{ i + 1 }}
+            </button>
+          </li>
+
+          <li class="page-item" [class.disabled]="page === totalPages - 1">
+            <button class="page-link" (click)="changePage(page + 1)">»</button>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="createProductModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- HEADER -->
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Thêm sản phẩm mới</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body">
+
+        <form #createProductForm="ngForm" novalidate>
+          <div class="row g-3">
+
+            <!-- TÊN SẢN PHẨM -->
+            <div class="col-md-6">
+              <label class="form-label">
+                Tên sản phẩm <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                name="productName"
+                required
+                [(ngModel)]="newProduct.productName"
+                #productNameCtrl="ngModel"
+                [class.is-invalid]="productNameCtrl.invalid && productNameCtrl.touched"
+              />
+              <div class="invalid-feedback">
+                Tên sản phẩm không được để trống
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">
+                Số lượng <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="quantity"
+                required
+                pattern="^[0-9]+$"
+                [(ngModel)]="newProduct.quantity"
+                #quantityCtrl="ngModel"
+                [class.is-invalid]="quantityCtrl.invalid && quantityCtrl.touched"
+              />
+
+              <div class="invalid-feedback" *ngIf="quantityCtrl.errors?.['required']">
+                Số lượng không được để trống
+              </div>
+
+              <div class="invalid-feedback" *ngIf="quantityCtrl.errors?.['pattern']">
+                Số lượng bắt buộc phải là số không chứa ký tự (, hay .)
+              </div>
+            </div>
+
+
+            <div class="col-md-3">
+              <label class="form-label">
+                Giá <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="price"
+                required
+                pattern="^[0-9]+$"
+                [(ngModel)]="newProduct.price"
+                #priceCtrl="ngModel"
+                [class.is-invalid]="priceCtrl.invalid && priceCtrl.touched"
+              />
+
+              <div class="invalid-feedback" *ngIf="priceCtrl.errors?.['required']">
+                Giá không được để trống
+              </div>
+
+              <div class="invalid-feedback" *ngIf="priceCtrl.errors?.['pattern']">
+                Giá bắt buộc phải là số không chứa ký tự (, hay .)
+              </div>
+            </div>
+
+
+            <!-- TÁC GIẢ -->
+            <div class="col-md-6 position-relative">
+              <label class="form-label">
+                Tác giả (cách nhau bằng dấu ,) <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="authorName"
+                required
+                [(ngModel)]="newProduct.authorName"
+                #authorCtrl="ngModel"
+                [class.is-invalid]="authorCtrl.invalid && authorCtrl.touched"
+                (ngModelChange)="onAuthorInputChange($event)"
+                (focus)="onAuthorFocus()"
+                autocomplete="off"
+              />
+
+              <div class="invalid-feedback">
+                Tác giả không được để trống
+              </div>
+
+              <!-- AUTOCOMPLETE AUTHOR -->
+              <ul
+                class="list-group position-absolute w-100"
+                *ngIf="showAuthorDropdown && authorSuggestions.length"
+                style="z-index: 9999; max-height: 200px; overflow-y: auto;"
+              >
+
+              <li
+                  class="list-group-item list-group-item-action"
+                  *ngFor="let a of authorSuggestions"
+                  (mousedown)="selectAuthor(a.authorName || a.name, 'create')"
+                >
+                  {{ a.authorName || a.name }}
+                </li>
+              </ul>
+            </div>
+
+
+            <!-- DANH MỤC -->
+            <div class="col-md-6 position-relative">
+              <label class="form-label">
+                Danh mục (cách nhau bằng dấu ,) <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="categoryName"
+                required
+                [(ngModel)]="newProduct.categoryName"
+                #categoryCtrl="ngModel"
+                [class.is-invalid]="categoryCtrl.invalid && categoryCtrl.touched"
+                (ngModelChange)="onCategoryInputChange($event)"
+                (focus)="onCategoryFocus()"
+                autocomplete="off"
+              />
+
+              <div class="invalid-feedback">
+                Danh mục không được để trống
+              </div>
+
+              <!-- AUTOCOMPLETE CATEGORY -->
+              <ul
+                class="list-group position-absolute w-100"
+                *ngIf="showCategoryDropdown && categorySuggestions.length"
+                style="z-index: 9999; max-height: 200px; overflow-y: auto;"
+              >
+              <li
+                  class="list-group-item list-group-item-action"
+                  *ngFor="let c of categorySuggestions"
+                  (mousedown)="selectCategory(c.categoryName || c.name, 'create')"
+                >
+                  {{ c.categoryName || c.name }}
+                </li>
+              </ul>
+            </div>
+
+
+            <!-- NHÀ XUẤT BẢN -->
+            <div class="col-md-6 position-relative">
+              <label class="form-label">
+                Nhà xuất bản <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="publisherName"
+                required
+                [(ngModel)]="newProduct.publisherName"
+                #publisherCtrl="ngModel"
+                [class.is-invalid]="publisherCtrl.invalid && publisherCtrl.touched"
+                (ngModelChange)="onPublisherInputChange($event)"
+                (focus)="onPublisherFocus()"
+                autocomplete="off"
+              />
+
+              <div class="invalid-feedback">
+                Nhà xuất bản không được để trống
+              </div>
+
+              <!-- AUTOCOMPLETE PUBLISHER -->
+              <ul
+                class="list-group position-absolute w-100"
+                *ngIf="showPublisherDropdown && publisherSuggestions.length"
+                style="z-index: 9999; max-height: 200px; overflow-y: auto;"
+              >
+              <li
+                  class="list-group-item list-group-item-action"
+                  *ngFor="let p of publisherSuggestions"
+                  (mousedown)="selectPublisher(p.publisherName || p.name, 'create')"
+                >
+                  {{ p.publisherName || p.name }}
+                </li>
+              </ul>
+            </div>
+
+
+            <!-- NĂM XUẤT BẢN -->
+            <div class="col-md-6">
+              <label class="form-label">Năm xuất bản</label>
+              <input
+                type="number"
+                class="form-control"
+                name="publicationDate"
+                min="1000"
+                max="2100"
+                [(ngModel)]="newProduct.publicationDate"
+              />
+            </div>
+
+            <!-- VỊ TRÍ -->
+            <div class="col-md-6">
+              <label class="form-label">
+                Vị trí sách <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                name="location"
+                required
+                [(ngModel)]="newProduct.location"
+                #locationCtrl="ngModel"
+                [class.is-invalid]="locationCtrl.invalid && locationCtrl.touched"
+              />
+              <div class="invalid-feedback">
+                Vị trí sách không được để trống
+              </div>
+            </div>
+
+            <!-- MÔ TẢ -->
+            <div class="col-12">
+              <label class="form-label">Mô tả</label>
+              <textarea
+                class="form-control"
+                rows="3"
+                name="description"
+                [(ngModel)]="newProduct.description">
+              </textarea>
+            </div>
+
+            <!-- ẢNH -->
+            <div class="col-12">
+              <label class="form-label">
+                Ảnh sản phẩm <span class="text-danger">*</span>
+              </label>
+              <input
+                type="file"
+                class="form-control"
+                required
+                (change)="onImageSelected($event)"
+                name="image"
+                ngModel
+                #imageCtrl="ngModel"
+                [class.is-invalid]="imageCtrl.invalid && imageCtrl.touched"
+              />
+              <div class="invalid-feedback">
+                Vui lòng chọn ảnh sản phẩm
+              </div>
+            </div>
+
+            <!-- PREVIEW -->
+            <div class="col-12" *ngIf="imagePreview">
+              <p class="mt-2 fw-bold">Preview:</p>
+              <img
+                [src]="imagePreview"
+                class="img-thumbnail"
+                width="120"
+              />
+            </div>
+
+          </div>
+
+          <!-- FOOTER -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal">
+              Hủy
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-dark"
+              [disabled]="createProductForm.invalid"
+              (click)="submitCreateProduct()">
+              Tạo mới
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="detailProductModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Thông tin chi tiết sản phẩm</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body" *ngIf="detailProduct">
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Tên sản phẩm:</div>
+          <div class="col-8">{{ detailProduct.productName }}</div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Số lượng:</div>
+          <div class="col-8">{{ detailProduct.quantity }}</div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Nhà xuất bản:</div>
+          <div class="col-8">{{ detailProduct.publisherName }}</div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Năm xuất bản:</div>
+          <div class="col-8">{{ detailProduct.publicationDate }}</div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Tác giả:</div>
+          <div class="col-8">{{ detailProduct.authorName }}</div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Danh mục:</div>
+          <div class="col-8">{{ detailProduct.categoryName }}</div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Vị trí sách:</div>
+          <div class="col-8">{{ detailProduct.location }}</div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Giá:</div>
+          <div class="col-8">{{ detailProduct.price | number }} đ</div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-4 fw-bold">Ảnh sản phẩm:</div>
+          <div class="col-8">
+            <img
+              [src]="'http://localhost:8177' + detailProduct.image"
+              alt="Product image"
+              class="img-fluid rounded border"
+              style="max-height: 200px; object-fit: contain"
+            >
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-4 fw-bold">Mô tả:</div>
+          <div class="col-8">
+              {{ detailProduct.description }}
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Sách mới:</div>
+          <div class="col-8">
+            <span class="badge" [ngClass]="detailProduct.isNew === 1 ? 'bg-success' : 'bg-secondary'">
+              {{ detailProduct.isNew === 1 ? 'Sách mới' : 'Không' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Trạng thái:</div>
+          <div class="col-8">
+            <span class="badge" [ngClass]="detailProduct.status === 1 ? 'bg-success' : 'bg-secondary'">
+              {{ detailProduct.status === 1 ? 'Còn sách' : 'Hết sách' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Ngày tạo:</div>
+          <div class="col-8">{{ detailProduct.createdAt | date: 'dd/MM/yyyy' }}</div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="col-4 fw-bold">Ngày cập nhật:</div>
+          <div class="col-8">{{ detailProduct.updatedAt | date: 'dd/MM/yyyy' }}</div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateProductModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Cập nhật sản phẩm</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body" *ngIf="editProduct">
+        <form #updateProductForm="ngForm" novalidate>
+
+          <div class="row g-3">
+
+            <!-- TÊN SẢN PHẨM -->
+            <div class="col-md-6">
+              <label class="form-label">
+                Tên sản phẩm <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                name="productName"
+                required
+                [(ngModel)]="editProduct.productName"
+                #productNameCtrl="ngModel"
+                [class.is-invalid]="productNameCtrl.invalid && productNameCtrl.touched"
+              />
+              <div class="invalid-feedback">
+                Tên sản phẩm không được để trống
+              </div>
+            </div>
+
+            <!-- SỐ LƯỢNG -->
+            <div class="col-md-3">
+              <label class="form-label">
+                Số lượng <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                name="quantity"
+                required
+                pattern="^[0-9]+$"
+                inputmode="numeric"
+                [(ngModel)]="editProduct.quantity"
+                #quantityCtrl="ngModel"
+                [class.is-invalid]="quantityCtrl.invalid && quantityCtrl.touched"
+              />
+              <div class="invalid-feedback" *ngIf="quantityCtrl.errors?.['required']">
+                Số lượng không được để trống
+              </div>
+              <div class="invalid-feedback" *ngIf="quantityCtrl.errors?.['pattern']">
+                Số lượng bắt buộc phải là số không chứa ký tự (, hay .)
+              </div>
+            </div>
+
+            <!-- GIÁ -->
+            <div class="col-md-3">
+              <label class="form-label">
+                Giá <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                name="price"
+                required
+                pattern="^[0-9]+$"
+                inputmode="numeric"
+                [(ngModel)]="editProduct.price"
+                #priceCtrl="ngModel"
+                [class.is-invalid]="priceCtrl.invalid && priceCtrl.touched"
+              />
+              <div class="invalid-feedback" *ngIf="priceCtrl.errors?.['required']">
+                Giá không được để trống
+              </div>
+              <div class="invalid-feedback" *ngIf="priceCtrl.errors?.['pattern']">
+                Giá bắt buộc phải là số không chứa ký tự (, hay .)
+              </div>
+            </div>
+
+            <!-- TÁC GIẢ -->
+            <div class="col-md-6 position-relative">
+              <label class="form-label">
+                Tác giả <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="authorName"
+                required
+                [(ngModel)]="editProduct.authorName"
+                #authorCtrl="ngModel"
+                [class.is-invalid]="authorCtrl.invalid && authorCtrl.touched"
+                (ngModelChange)="onAuthorInputChange($event)"
+                (focus)="onAuthorFocus()"
+                autocomplete="off"
+              />
+
+              <div class="invalid-feedback">
+                Tác giả không được để trống
+              </div>
+
+              <!-- AUTOCOMPLETE AUTHOR -->
+              <ul
+                class="list-group position-absolute w-100"
+                *ngIf="showAuthorDropdown && authorSuggestions.length"
+                style="z-index: 9999; max-height: 200px; overflow-y: auto;"
+              >
+
+              <li
+                  class="list-group-item list-group-item-action"
+                  *ngFor="let a of authorSuggestions"
+                  (mousedown)="selectAuthor(a.authorName || a.name, 'edit')"
+                >
+                  {{ a.authorName || a.name }}
+                </li>
+              </ul>
+            </div>
+
+
+            <!-- DANH MỤC -->
+            <div class="col-md-6 position-relative">
+              <label class="form-label">
+                Danh mục <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="categoryName"
+                required
+                [(ngModel)]="editProduct.categoryName"
+                #categoryCtrl="ngModel"
+                [class.is-invalid]="categoryCtrl.invalid && categoryCtrl.touched"
+                (ngModelChange)="onCategoryInputChange($event)"
+                (focus)="onCategoryFocus()"
+                autocomplete="off"
+              />
+
+              <div class="invalid-feedback">
+                Danh mục không được để trống
+              </div>
+
+              <!-- AUTOCOMPLETE CATEGORY -->
+              <ul
+                class="list-group position-absolute w-100"
+                *ngIf="showCategoryDropdown && categorySuggestions.length"
+                style="z-index: 9999; max-height: 200px; overflow-y: auto;"
+              >
+
+              <li
+                  class="list-group-item list-group-item-action"
+                  *ngFor="let c of categorySuggestions"
+                  (mousedown)="selectCategory(c.categoryName || c.name, 'edit')"
+                >
+                  {{ c.categoryName || c.name }}
+                </li>
+              </ul>
+            </div>
+
+
+            <!-- NHÀ XUẤT BẢN -->
+            <div class="col-md-6 position-relative">
+              <label class="form-label">
+                Nhà xuất bản <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="publisherName"
+                required
+                [(ngModel)]="editProduct.publisherName"
+                #publisherCtrl="ngModel"
+                [class.is-invalid]="publisherCtrl.invalid && publisherCtrl.touched"
+                (ngModelChange)="onPublisherInputChange($event)"
+                (focus)="onPublisherFocus()"
+                autocomplete="off"
+              />
+
+              <div class="invalid-feedback">
+                Nhà xuất bản không được để trống
+              </div>
+
+              <!-- AUTOCOMPLETE PUBLISHER -->
+              <ul
+                class="list-group position-absolute w-100"
+                *ngIf="showPublisherDropdown && publisherSuggestions.length"
+                style="z-index: 9999; max-height: 200px; overflow-y: auto;"
+              >
+
+              <li
+                  class="list-group-item list-group-item-action"
+                  *ngFor="let p of publisherSuggestions"
+                  (mousedown)="selectPublisher(p.publisherName || p.name, 'edit')"
+                >
+                  {{ p.publisherName || p.name }}
+                </li>
+              </ul>
+            </div>
+
+
+            <!-- NĂM XUẤT BẢN -->
+            <div class="col-md-6">
+              <label class="form-label">Năm xuất bản</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="editProduct.publicationDate"
+                name="publicationDate"
+              />
+            </div>
+
+            <!-- VỊ TRÍ -->
+            <div class="col-md-6">
+              <label class="form-label">
+                Vị trí sách <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                name="location"
+                required
+                [(ngModel)]="editProduct.location"
+                #locationCtrl="ngModel"
+                [class.is-invalid]="locationCtrl.invalid && locationCtrl.touched"
+              />
+              <div class="invalid-feedback">
+                Vị trí không được để trống
+              </div>
+            </div>
+
+            <!-- MÔ TẢ -->
+            <div class="col-12">
+              <label class="form-label">Mô tả</label>
+              <textarea
+                class="form-control"
+                rows="3"
+                [(ngModel)]="editProduct.description"
+                name="description">
+              </textarea>
+            </div>
+
+            <!-- ẢNH -->
+            <div class="col-12">
+              <label class="form-label">Đổi ảnh (nếu muốn)</label>
+              <input
+                type="file"
+                class="form-control"
+                (change)="onEditImageSelected($event)">
+            </div>
+
+            <div class="col-12" *ngIf="editImagePreview">
+              <p class="mt-2 fw-bold">Preview:</p>
+              <img
+                [src]="editImagePreview"
+                class="img-thumbnail"
+                width="120">
+            </div>
+
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Hủy
+            </button>
+            <button
+              class="btn btn-dark"
+              [disabled]="updateProductForm.invalid"
+              (click)="submitUpdateProduct()">
+              Cập nhật
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+

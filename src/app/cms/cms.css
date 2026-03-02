@@ -1,0 +1,39 @@
+#wrapper {
+  min-height: 100vh;
+}
+
+#sidebar-wrapper {
+  width: 260px;
+  transition: width 0.3s ease;
+}
+
+#sidebar-wrapper.collapsed {
+  width: 70px;
+}
+
+.sidebar-item,
+.sidebar-sub-item {
+  display: block;
+  padding: 12px 16px;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sidebar-item:hover,
+.sidebar-sub-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-sub-item {
+  padding-left: 40px;
+  font-size: 0.9rem;
+}
+
+.sidebar-item.active {
+  background-color: #0d6efd;
+}
+
+#page-content-wrapper {
+  background: #f8f9fa;
+}

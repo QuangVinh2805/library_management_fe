@@ -1,0 +1,184 @@
+<div class="d-flex" id="wrapper">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar-wrapper"
+         class="bg-dark text-white d-flex flex-column"
+         [ngClass]="{'collapsed': isCollapsed}">
+
+    <!-- LOGO -->
+    <div class="sidebar-heading text-center py-3 border-bottom border-secondary"
+         routerLink="/cms/profile-management">
+      <h5 class="fw-bold mb-0">
+        QUẢN LÝ
+      </h5>
+    </div>
+
+    <!-- MENU -->
+    <div class="flex-grow-1 overflow-auto">
+
+      <!-- ADMIN -->
+      <a *ngIf="canUser"
+         routerLink="/cms/user-management"
+         routerLinkActive="active"
+         class="sidebar-item">
+        <i class="bi bi-people-fill me-2"></i> Quản lý tài khoản
+      </a>
+
+      <a *ngIf="canReader"
+         routerLink="/cms/reader-management"
+         routerLinkActive="active"
+         class="sidebar-item">
+        <i class="bi bi-people-fill me-2"></i> Quản lý độc giả
+      </a>
+
+
+      <div *ngIf="
+          canProduct ||
+          canAuthor||
+          canPublisher ||
+          canCategory
+        ">
+
+        <a class="sidebar-item d-flex justify-content-between align-items-center"
+           data-bs-toggle="collapse"
+           href="#productMenu">
+          <span><i class="bi bi-box-seam me-2"></i> Quản lý sản phẩm</span>
+          <i class="bi bi-caret-down-fill"></i>
+        </a>
+
+        <div class="collapse" id="productMenu">
+
+          <a *ngIf="canProduct"
+             routerLink="/cms/product-management"
+             class="sidebar-sub-item">
+            <i class="bi bi-book-half me-2"></i> Quản lý sách
+          </a>
+
+          <a *ngIf="canAuthor"
+             routerLink="/cms/author-management"
+             class="sidebar-sub-item">
+            <i class="bi bi-person-lines-fill me-2"></i> Quản lý tác giả
+          </a>
+
+          <a *ngIf="canPublisher"
+             routerLink="/cms/publisher-management"
+             class="sidebar-sub-item">
+            <i class="bi bi-building me-2"></i> Quản lý NXB
+          </a>
+
+          <a *ngIf="canCategory"
+             routerLink="/cms/category-management"
+             class="sidebar-sub-item">
+            <i class="bi bi-tags-fill me-2"></i> Quản lý danh mục
+          </a>
+        </div>
+      </div>
+
+      <a *ngIf="canBorrowReturn"
+         routerLink="/cms/borrow-return-product-management"
+         class="sidebar-item">
+        <i class="bi bi-journal-arrow-up me-2"></i> Quản lý mượn trả
+      </a>
+
+<!--      <a *ngIf="canReservation"-->
+<!--         routerLink="/cms/product-reservation-management"-->
+<!--         class="sidebar-item">-->
+<!--        <i class="bi bi-bookmark-check me-2"></i> Đăng ký mượn-->
+<!--      </a>-->
+
+      <a *ngIf="canBlackList"
+         routerLink="/cms/black-list-management"
+         class="sidebar-item">
+        <i class="bi bi-person-x-fill me-2"></i> Black List
+      </a>
+
+      <div *ngIf="
+          canRole ||
+          canRoute ||
+          canPermission ||
+          canDecentralization
+        ">
+
+        <a class="sidebar-item d-flex justify-content-between align-items-center"
+           data-bs-toggle="collapse"
+           href="#roleMenu">
+          <span><i class="bi bi-shield-lock me-2"></i>Phân quyền</span>
+          <i class="bi bi-caret-down-fill"></i>
+        </a>
+
+        <div class="collapse" id="roleMenu">
+
+          <a *ngIf="canRole"
+             routerLink="/cms/role-management"
+             class="sidebar-sub-item">
+            <i class="bi bi-people-fill me-2"></i>Quản lý vai trò
+          </a>
+
+          <a *ngIf="canRoute"
+             routerLink="/cms/route-management"
+             class="sidebar-sub-item">
+            <i class="bi bi-signpost-split me-2"></i>Quản lý route
+          </a>
+
+          <a *ngIf="canPermission"
+             routerLink="/cms/permission-management"
+             class="sidebar-sub-item">
+            <i class="bi bi-hdd-network me-2"></i>Quản lý end-point
+          </a>
+
+          <a *ngIf="canDecentralization"
+             routerLink="/cms/decentralization"
+             class="sidebar-sub-item">
+            <i class="bi bi-sliders me-2"></i>Phân quyền
+          </a>
+        </div>
+      </div>
+
+      <a *ngIf="canNotification"
+         routerLink="/cms/notification-management"
+         class="sidebar-item">
+        <i class="bi bi-bell-fill me-2"></i> Thông báo
+      </a>
+
+      <a *ngIf="canBanner"
+         routerLink="/cms/banner-management"
+         routerLinkActive="active"
+         class="sidebar-item">
+        <i class="bi bi-collection me-2"></i> Quản lý quảng cáo
+      </a>
+
+      <a *ngIf="canStatistical"
+         routerLink="/cms/statistical-management"
+         routerLinkActive="active"
+         class="sidebar-item">
+        <i class="bi bi-bar-chart-fill me-2"></i> Thống kê
+      </a>
+
+      <!-- PRODUCT MENU -->
+
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div id="page-content-wrapper" class="flex-grow-1">
+
+    <nav class="navbar bg-white border-bottom shadow-sm px-4">
+      <button class="btn btn-outline-dark border-0" (click)="toggleSidebar()">
+        <i class="bi" [ngClass]="{'bi-list': isCollapsed, 'bi-x-lg': !isCollapsed}"></i>
+      </button>
+
+      <span class="ms-3 fw-bold fs-5">Trang quản trị</span>
+
+      <div class="ms-auto">
+        <button class="btn btn-outline-dark btn-sm" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i> Đăng xuất
+        </button>
+      </div>
+    </nav>
+
+    <div class="container-fluid p-4">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+</div>

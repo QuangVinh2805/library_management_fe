@@ -1,0 +1,78 @@
+<div class="product-detail-container" *ngIf="!loading && product">
+
+  <div class="left">
+    <img [src]="getImage(product.image)" alt="{{ product.productName }}" class="product-image">
+  </div>
+
+  <div class="right">
+    <div class="title-heart-row">
+      <h1 class="product-title">{{ product.productName }}</h1>
+
+      <div class="heart-wrapper">
+        <i class="bi heart-icon"
+           [ngClass]="{'bi-heart-fill': isFavourite, 'bi-heart': !isFavourite}"
+           (click)="toggleFavourite()"></i>
+
+        <span class="favourite-count">{{ favouriteCount }}</span>
+      </div>
+    </div>
+
+
+    <p class="product-description">{{ product.description }}</p>
+    <p><strong>Tác giả:</strong> {{ product.authorName }}</p>
+    <p><strong>Thể loại:</strong> {{ product.categoryName }}</p>
+    <p><strong>Giá:</strong> {{ product.price | number }} đ</p>
+    <p><strong>Nhà xuất bản:</strong> {{ product.publisherName }}</p>
+    <p><strong>Năm xuất bản:</strong> {{ product.publicationDate }}</p>
+    <p><strong>Số lượng:</strong> {{ product.quantity }}</p>
+    <p><strong>Vị trí sách:</strong> {{ product.location }}</p>
+
+    <p>
+      <strong>Tình trạng:</strong>
+
+      <span
+        *ngIf="product.quantity === 0"
+        class="text-danger fw-bold"
+      >
+    Hết sách
+  </span>
+
+      <span
+        *ngIf="product.quantity > 0 && product.status === 0"
+        class="text-warning fw-bold"
+      >
+    Sách tạm ngưng cho mượn
+  </span>
+
+      <span
+        *ngIf="product.quantity > 0 && product.status === 1"
+        class="text-success fw-bold"
+      >
+    Còn sách
+  </span>
+    </p>
+
+
+    <button
+      class="borrow-btn"
+      [disabled]="product.quantity === 0 || product.status === 0"
+      (click)="borrowBook(product.hashId, $event)"
+    >
+      {{
+        product.quantity === 0
+          ? 'Hết sách'
+          : product.status === 0
+            ? 'Tạm ngưng'
+            : 'Mượn'
+      }}
+    </button>
+
+  </div>
+
+</div>
+
+<div *ngIf="loading" class="loading-box">
+  Đang tải sản phẩm...
+</div>
+
+

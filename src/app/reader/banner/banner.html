@@ -1,0 +1,28 @@
+<div class="layout-container">
+  <h2 class="main-title">Chào mừng đến với Thư viện Sao Việt</h2>
+
+  <div class="cards-wrapper">
+
+    <button class="nav-button-left-arrow" (click)="prevSlide()">&lt;</button>
+
+    <div class="slide-container slide-fade">
+
+      <div class="info-card" *ngFor="let card of visibleBanners">
+        <div class="card-row">
+
+          <img [src]="getImage(card.image)" class="banner-img" />
+
+          <div class="text-section">
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.description }}</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <button class="nav-button-right-arrow" (click)="nextSlide()">&gt;</button>
+
+  </div>
+</div>

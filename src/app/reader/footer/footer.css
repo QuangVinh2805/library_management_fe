@@ -1,0 +1,171 @@
+.footer {
+  background-color: #ffffff;
+  padding: 40px 20px;
+  font-family: "Arial", sans-serif;
+  max-width: 1060px;
+  margin: 0 auto;
+  border-left:1px solid #babbae;
+  border-right:1px solid #babbae;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.footer-section h2,
+.footer-title {
+  color: #3a3424;
+  margin-bottom: 15px;
+  text-align: center;
+
+}
+
+.footer-logo {
+  font-size: 1.7em;
+  font-weight: bold;
+  text-align: center;
+  font-family: cursive;
+  cursor: pointer;
+}
+
+.footer-text {
+  color: #4b473c;
+  line-height: 1.6;
+  text-align: center;
+
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+  text-decoration: none;
+  color: #4f4533;
+  transition: color 0.2s;
+}
+
+.footer-section ul li a:hover {
+  color: #6b5f43;
+}
+
+.contact p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #4b4533;
+  margin-bottom: 8px;
+}
+
+.contact i {
+  font-size: 1.1em;
+  color: #6b5f43;
+}
+
+.footer-bottom {
+  max-width: 1060px;
+  margin: 25px auto 0;
+  text-align: center;
+  padding-top: 15px;
+  font-size: 0.9em;
+  color: #4b473c;
+  border-top: 1px solid #bfb8a2;
+}
+
+
+@media (max-width: 1200px) {
+  .footer {
+    padding: 35px 20px;
+  }
+  .footer-container {
+    gap: 30px;
+  }
+}
+
+@media (max-width: 992px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .footer {
+    padding: 30px 15px;
+  }
+
+  .footer-logo {
+    font-size: 1.6em;
+  }
+
+  .footer-title {
+    font-size: 1.2em;
+  }
+
+  .footer-text {
+    font-size: 0.95em;
+  }
+
+  .footer-section ul li {
+    margin-bottom: 8px;
+  }
+
+  .contact div {
+    font-size: 0.95em;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 25px 12px;
+  }
+
+  .footer-logo {
+    font-size: 1.5em;
+  }
+
+  .footer-title {
+    font-size: 1.15em;
+  }
+
+  .footer-text {
+    font-size: 0.9em;
+    line-height: 1.5;
+  }
+
+  .footer-section ul li a {
+    font-size: 0.9em;
+  }
+
+  .contact div {
+    font-size: 0.9em;
+  }
+
+  .footer-bottom {
+    font-size: 0.85em;
+    padding-top: 12px;
+  }
+}
+
+@media (max-width: 380px) {
+  .footer-logo {
+    font-size: 1.4em;
+  }
+
+  .footer-title {
+    font-size: 1.1em;
+  }
+
+  .footer-text,
+  .contact div,
+  .footer-section ul li a {
+    font-size: 0.85em;
+  }
+}
+

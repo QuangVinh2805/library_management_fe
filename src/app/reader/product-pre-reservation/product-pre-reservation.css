@@ -1,0 +1,134 @@
+.product-pre-reservation {
+  max-width: 1060px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fdfcf4;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.product-pre-reservation h2 {
+  text-align: center;
+  color: #4b3e2b;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.product-pre-reservation p {
+  text-align: center;
+  font-size: 16px;
+  color: #555;
+}
+
+.product-pre-reservation .text-danger {
+  color: #c0392b;
+}
+
+
+.product-pre-reservation table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+.product-pre-reservation table th,
+.product-pre-reservation table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+.product-pre-reservation table th {
+  background-color: #e5dfc7;
+  color: #4b3e2b;
+  font-weight: 600;
+}
+
+
+.product-pre-reservation .product-img {
+  width: 60px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+
+.product-pre-reservation table tbody tr {
+  transition: background-color 0.3s;
+}
+
+.product-pre-reservation table tbody tr:hover {
+  background-color: #f0ebd6;
+}
+
+
+.product-pre-reservation table td {
+  color: #333;
+}
+
+
+.status-cancelled {
+  display: inline-block;
+  background-color: #e74c3c;
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.status-requested {
+  display: inline-block;
+  background-color: #f1c40f;
+  color: #333;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.status-confirmed {
+  display: inline-block;
+  background-color: #3498db;
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.status-borrowing {
+  display: inline-block;
+  background-color: #9b59b6;
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.status-returned {
+  display: inline-block;
+  background-color: #2ecc71;
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .product-pre-reservation table th,
+  .product-pre-reservation table td {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+
+  .product-pre-reservation h2 {
+    font-size: 20px;
+  }
+
+  .product-pre-reservation .product-img {
+    width: 50px;
+    height: 70px;
+  }
+}

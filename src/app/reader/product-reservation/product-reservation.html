@@ -1,0 +1,82 @@
+<div class="reservation-container">
+
+  <div class="content-row">
+
+    <div class="card product-card" *ngIf="product">
+
+      <div class="product-left">
+        <img [src]="getImage(product.image)" [alt]="product.productName" class="product-image">
+      </div>
+
+      <div class="product-right">
+        <h3 class="product-name">{{ product.productName }}</h3>
+
+        <p><strong>Tác giả:</strong> {{ product.authorName }}</p>
+        <p><strong>Thể loại:</strong> {{ product.categoryName }}</p>
+
+        <p class="product-desc">Bạn đang mượn quyển sách này.</p>
+
+        <form [formGroup]="reservationForm" class="reservation-form">
+
+          <div class="form-group">
+            <label>Số lượng</label>
+            <input type="number" formControlName="quantity" min="1">
+          </div>
+
+          <div class="form-group">
+            <label>Ngày mượn</label>
+            <input type="date"
+                   formControlName="borrowDay"
+                   [min]="today">
+          </div>
+
+          <div class="form-group">
+            <label>Ngày trả</label>
+            <input type="date"
+                   formControlName="dueDay"
+                   [min]="reservationForm.get('borrowDay')?.value || today">
+          </div>
+
+          <div class="error"
+               *ngIf="reservationForm.get('dueDate')?.invalid &&
+            reservationForm.get('dueDate')?.touched">
+            Vui lòng chọn ngày trả
+          </div>
+
+          <div class="error"
+               *ngIf="reservationForm.get('borrowDay')?.invalid &&
+            reservationForm.get('borrowDay')?.touched">
+            Vui lòng chọn ngày mượn
+          </div>
+
+
+
+        </form>
+
+      </div>
+
+    </div>
+
+    <div class="right-side">
+
+      <div class="card user-card" *ngIf="user">
+        <h3>Thông tin độc giả</h3>
+
+        <p><strong>Tên:</strong> {{ user.name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Số điện thoại:</strong> {{ user.phone }}</p>
+        <p><strong>Cccd:</strong> {{ user.userCode }}</p>
+      </div>
+
+      <button class="submit-btn" (click)="submitReservation()" [disabled]="submitting || reservationForm.invalid ">
+        {{ submitting ? "Đang xử lý..." : "Đăng ký mượn" }}
+      </button>
+
+    </div>
+
+  </div>
+
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+
+</div>

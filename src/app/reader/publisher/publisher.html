@@ -1,0 +1,41 @@
+<div class="publisher-wrapper">
+  <h2 class="publisher-title">Danh sách nhà xuất bản</h2>
+
+  <div class="publisher-grid">
+    <div
+      class="publisher-card"
+      *ngFor="let pub of publishers"
+      (click)="goToPublisher(pub.id, pub.publisherName)"
+      style="cursor: pointer;"
+    >
+      {{ pub.publisherName }}
+      <span *ngIf="publisherCounts[pub.id] !== undefined">
+        ({{ publisherCounts[pub.id] }})
+      </span>
+    </div>
+  </div>
+
+  <nav *ngIf="totalPages > 1" class="mt-3">
+    <ul class="pagination justify-content-center">
+
+      <li class="page-item" [class.disabled]="page === 0">
+        <button class="page-link" (click)="changePage(page - 1)">«</button>
+      </li>
+
+      <li class="page-item"
+          *ngFor="let p of [].constructor(totalPages); let i = index"
+          [class.active]="i === page">
+        <button class="page-link" (click)="changePage(i)">
+          {{ i + 1 }}
+        </button>
+      </li>
+
+      <li class="page-item" [class.disabled]="page === totalPages - 1">
+        <button class="page-link" (click)="changePage(page + 1)">»</button>
+      </li>
+
+    </ul>
+  </nav>
+</div>
+
+

@@ -1,0 +1,134 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%; border-radius: 16px;">
+    <div class="logo" routerLink="/reader">Thư viện Sao Việt</div>
+    <h3 class="text-center mb-4 fw-bold">Đăng Ký</h3>
+
+    <form (ngSubmit)="onSubmit()" #registerForm="ngForm" novalidate>
+
+      <div class="mb-3">
+        <label class="form-label">
+          Email <span class="text-danger">*</span>
+        </label>
+        <input
+          type="email"
+          name="email"
+          class="form-control"
+          required
+          email
+          [(ngModel)]="registerData.email"
+          #emailCtrl="ngModel"
+        />
+        <div *ngIf="emailCtrl.invalid && emailCtrl.touched" class="text-danger small mt-1">
+          Email không hợp lệ
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          Họ và tên <span class="text-danger">*</span>
+        </label>
+        <input
+          type="text"
+          name="name"
+          class="form-control"
+          required
+          minlength="3"
+          [(ngModel)]="registerData.name"
+          #nameCtrl="ngModel"
+        />
+        <div *ngIf="nameCtrl.invalid && nameCtrl.touched" class="text-danger small mt-1">
+          Họ tên phải có ít nhất 3 ký tự
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          Ngày sinh
+        </label>
+        <input
+          type="date"
+          name="birthday"
+          class="form-control"
+          required
+          [(ngModel)]="registerData.birthday"
+          #birthdayCtrl="ngModel"
+        />
+        <div *ngIf="birthdayCtrl.invalid && birthdayCtrl.touched" class="text-danger small mt-1">
+          Vui lòng chọn ngày sinh
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          Địa chỉ
+        </label>
+        <input
+          type="text"
+          name="address"
+          class="form-control"
+          minlength="5"
+          [(ngModel)]="registerData.address"
+          #addressCtrl="ngModel"
+        />
+        <div *ngIf="addressCtrl.invalid && addressCtrl.touched" class="text-danger small mt-1">
+          Địa chỉ không hợp lệ
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          Số điện thoại
+        </label>
+        <input
+          type="text"
+          name="phone"
+          class="form-control"
+          pattern="^[0-9]{10}$"
+          [(ngModel)]="registerData.phone"
+          #phoneCtrl="ngModel"
+        />
+        <div *ngIf="phoneCtrl.invalid && phoneCtrl.touched" class="text-danger small mt-1">
+          Số điện thoại phải gồm 10 chữ số
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          Căn cước công dân <span class="text-danger">*</span>
+        </label>
+        <input
+          type="text"
+          name="userCode"
+          class="form-control"
+          required
+          pattern="^[0-9]{12}$"
+          [(ngModel)]="registerData.userCode"
+          #cccdCtrl="ngModel"
+        />
+        <div *ngIf="cccdCtrl.invalid && cccdCtrl.touched" class="text-danger small mt-1">
+          CCCD phải gồm 12 chữ số
+        </div>
+      </div>
+
+
+      <div class="register-link" routerLink="/login">Bạn đã có tài khoản?</div>
+
+      <button
+        type="submit"
+        class="btn btn-login w-100 mt-2"
+        [disabled]="isLoading || registerForm.invalid"
+      >
+        {{ isLoading ? 'Đang đăng ký...' : 'Đăng ký' }}
+      </button>
+
+      <div *ngIf="infoMessage" class="alert alert-info mt-3 text-center py-2">
+        {{ infoMessage }}
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3 text-center py-2">
+        {{ errorMessage }}
+      </div>
+
+    </form>
+  </div>
+</div>

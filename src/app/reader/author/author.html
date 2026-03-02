@@ -1,0 +1,38 @@
+<div class="author-wrapper">
+  <h2 class="author-title">Danh sách tác giả</h2>
+
+  <div class="author-grid">
+    <div
+      class="author-card"
+      *ngFor="let au of authors"
+      (click)="goToAuthor(au.id, au.authorName)"
+      style="cursor: pointer;"
+    >
+      {{ au.authorName }}
+      <span *ngIf="authorCounts[au.id] !== undefined">
+        ({{ authorCounts[au.id] }})
+      </span>
+    </div>
+  </div>
+  <nav *ngIf="totalPages > 1" class="mt-3">
+    <ul class="pagination justify-content-center">
+
+      <li class="page-item" [class.disabled]="page === 0">
+        <button class="page-link" (click)="changePage(page - 1)">«</button>
+      </li>
+
+      <li class="page-item"
+          *ngFor="let p of [].constructor(totalPages); let i = index"
+          [class.active]="i === page">
+        <button class="page-link" (click)="changePage(i)">
+          {{ i + 1 }}
+        </button>
+      </li>
+
+      <li class="page-item" [class.disabled]="page === totalPages - 1">
+        <button class="page-link" (click)="changePage(page + 1)">»</button>
+      </li>
+
+    </ul>
+  </nav>
+</div>

@@ -1,0 +1,26 @@
+<div class="trending-books-container" *ngIf="!loading">
+  <h2 class="section-title">Sách lịch sử</h2>
+
+  <div class="carousel-wrapper">
+    <button class="nav-button left-arrow" (click)="prevSlide()">&lt;</button>
+
+    <div id="categoryBooksCarousel" class="books-list-track slide-container">
+      <div *ngFor="let book of visibleBooks" class="book-card" (click)="goToDetail(book.hashId)">
+        <div class="book-cover-container">
+          <img [src]="getImage(book.image)" [alt]="book.productName" class="book-cover-image">
+        </div>
+
+        <div class="action-button-area">
+          <button class="action-button borrow-btn"
+                  (click)="borrowBook(book.hashId, $event)">
+            Mượn
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button class="nav-button right-arrow" (click)="nextSlide()">&gt;</button>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading"></div>

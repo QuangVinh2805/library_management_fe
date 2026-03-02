@@ -1,0 +1,179 @@
+<div class="card shadow">
+
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span class="fw-bold">Danh sách Permission (API)</span>
+    <button *ngIf="canCreate" class="btn btn-light btn-sm border" (click)="openCreateModal()">
+      <i class="bi bi-plus-circle"></i> Thêm mới
+    </button>
+  </div>
+
+  <div class="card-body">
+
+    <!-- Search -->
+    <div class="mb-3">
+      <input class="form-control"
+             placeholder="Tìm kiếm theo tên / code / endpoint..."
+             [(ngModel)]="searchKeyword"
+             (ngModelChange)="onSearchInputChange($event)">
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border"></div>
+    </div>
+
+    <!-- Table -->
+    <div *ngIf="!loading" class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+        <tr>
+          <th>Tên</th>
+          <th>Code</th>
+          <th>Endpoint</th>
+          <th>Method</th>
+          <th>Route</th>
+          <th class="text-center" style="width:120px">Thao tác</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let p of permissions">
+          <td>{{ p.name }}</td>
+          <td>
+            <span class="badge bg-dark">{{ p.code }}</span>
+          </td>
+          <td>{{ p.endPoint }}</td>
+          <td>
+            <span class="badge"
+                  [ngClass]="{
+                    'bg-success': p.method === 'GET',
+                    'bg-primary': p.method === 'POST',
+                    'bg-warning text-dark': p.method === 'PUT',
+                    'bg-danger': p.method === 'DELETE'
+                  }">
+              {{ p.method }}
+            </span>
+          </td>
+          <td>{{ p.routeName }}</td>
+
+          <td class="text-center">
+            <button *ngIf="canUpdate" class="btn btn-sm btn-outline-primary me-1"
+                    (click)="openEditModal(p)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+
+            <button *ngIf="canDelete" class="btn btn-sm btn-outline-danger"
+                    (click)="openDeleteModal(p)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <nav *ngIf="totalPages > 1" class="mt-3">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="page === 0">
+            <button class="page-link" (click)="changePage(page - 1)">«</button>
+          </li>
+
+          <li class="page-item"
+              *ngFor="let p of [].constructor(totalPages); let i = index"
+              [class.active]="i === page">
+            <button class="page-link" (click)="changePage(i)">
+              {{ i + 1 }}
+            </button>
+          </li>
+
+          <li class="page-item" [class.disabled]="page === totalPages - 1">
+            <button class="page-link" (click)="changePage(page + 1)">»</button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE / UPDATE MODAL -->
+<div class="modal fade" id="permissionModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ editPermission ? 'Cập nhật Permission' : 'Thêm Permission' }}
+        </h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <label class="form-label">Tên</label>
+            <input class="form-control" [(ngModel)]="form.name">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Code</label>
+            <input class="form-control" [(ngModel)]="form.code">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Endpoint</label>
+            <input class="form-control" [(ngModel)]="form.route">
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Method</label>
+            <select class="form-select" [(ngModel)]="form.method">
+              <option>GET</option>
+              <option>POST</option>
+              <option>PUT</option>
+              <option>DELETE</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Route name</label>
+            <input class="form-control" [(ngModel)]="form.routeName">
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-dark" (click)="submit()">
+          {{ editPermission ? 'Cập nhật' : 'Tạo mới' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal fade" id="deletePermissionModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Xác nhận xoá</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        Bạn có chắc chắn muốn xoá permission
+        <strong>{{ deletePermissionItem?.code }}</strong> không?
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-danger" (click)="confirmDelete()">Xoá</button>
+      </div>
+
+    </div>
+  </div>
+</div>

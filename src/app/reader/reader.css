@@ -1,0 +1,4 @@
+.reader-wrapper {
+  background-color: #e5dfc7;
+  min-height: 100vh; /* đảm bảo phủ full màn hình */
+}
